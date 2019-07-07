@@ -20,8 +20,7 @@ def pick_x_region(
     """
     if isinstance(df,pandas.core.frame.DataFrame):
         df = df.copy()
-        df = df[df.time<x_interval[1]]
-        df = df[df.time>x_interval[0]]
+        df = df.where((df.time<x_interval[1])&(df.time>x_interval[0]))
         return df
 
 
@@ -51,5 +50,3 @@ def pandas_read_sec_csv(file_path:'string file path'):
         return None
 
 
-def sth():
-    pass
