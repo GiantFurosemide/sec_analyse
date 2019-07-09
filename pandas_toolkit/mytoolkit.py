@@ -55,7 +55,7 @@ def pandas_read_sec_csv(file_path:'string file path'):
 
 # two funtion to combine all regular process
 # use these two funtion 
-def onestep_norm_peak2max(filepath:str):
+def onestep_norm_peak2max(filepath:str,x_interval:tuple=(2.0,5.0)):
     '''
     input:filepath of single csv file 
     output: pandas data frame
@@ -64,13 +64,13 @@ def onestep_norm_peak2max(filepath:str):
     # read
     fi = pandas_read_sec_csv(fi)
     # pick region(2.5,5.0)
-    fi = pick_x_region(fi,(2.5,5.0))
+    fi = pick_x_region(fi,x_interval)
     # normalize
     fi = normalize_peak2max(fi)
 
     return fi
 
-def onestep_norm_peak2zero(filepath):
+def onestep_norm_peak2zero(filepath:str,x_interval:tuple=(2.0,5.0)):
     '''
     input:filepath of single csv file 
     output: pandas data frame
@@ -79,7 +79,7 @@ def onestep_norm_peak2zero(filepath):
     # read
     fi = pandas_read_sec_csv(fi)
     # pick region(2.5,5.0)
-    fi = pick_x_region(fi,(2.5,5.0))
+    fi = pick_x_region(fi,x_interval)
     # normalize
     fi = normalize_peak2zero(fi)
 
