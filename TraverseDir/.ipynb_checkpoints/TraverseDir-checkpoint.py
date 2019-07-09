@@ -13,20 +13,17 @@ def traverse_dir(rootDir,pathlist:list):
             traverse_dir(path,pathlist)
         elif not os.path.isdir(path):
             if ".csv" in fi or ".CSV" in fi:
-                if fi=='all.csv':
-                    pass
-                else:
-                    pathlist.append(path)
+                pathlist.append(path)
 
 
-# use this to return a sorted filepaths of all csv files in rootdir(which as input filepafth)
+# use this to ruturn a sorted filepaths of all csv files in rootdir(which as input filepafth)
 def show_all_path(filepath:str):
     filepath_list = []
     filepath = filepath.strip()
     traverse_dir(filepath,filepath_list)
     return sorted(filepath_list)
 
-# use this to return filenames from a filepath list
+
 def get_filename(filepath_list:list):
     namelist=[]
     for fi in filepath_list:
