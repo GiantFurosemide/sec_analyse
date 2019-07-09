@@ -31,4 +31,7 @@ def get_filename(filepath_list:list):
         namelist.append(fi.split('.')[0])# fi.split('.')[0] for delete '.csv'
     return namelist
 
-name= show_all_path('/Users/wangmu/Documents/Science/mG1/数据/sec ')
+if __name__ == "__main__":
+    print("test case")
+    name= show_all_path('/Users/wangmu/Documents/Science/mG1/数据/sec ')
+    print(name)
