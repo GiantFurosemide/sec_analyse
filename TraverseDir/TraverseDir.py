@@ -37,7 +37,7 @@ def get_filename(filepath_list:list):
     return namelist
 
 # this function for function makeshure_seccsv
-def pandas_read_sec_csv(file_path:'string file path'):
+def _pandas_read_sec_csv(file_path:'string file path'):
     '''
     only for read individual sec csv file
     columns given [['time','peak']]
@@ -60,8 +60,8 @@ def makesure_seccsv(filepath_list:list):
     '''
     new_filepath_list=[]
     for filepath in filepath_list:
-        fi = pandas_read_sec_csv(filepath)
-        if fi == None:
+        fi = _pandas_read_sec_csv(filepath)
+        if fi is None:
             pass
         else:
             new_filepath_list.append(filepath)

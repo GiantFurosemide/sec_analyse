@@ -1,4 +1,5 @@
 import os 
+import pandas 
 
 
 def traverse_dir(rootDir,pathlist:list): 
@@ -13,23 +14,59 @@ def traverse_dir(rootDir,pathlist:list):
             traverse_dir(path,pathlist)
         elif not os.path.isdir(path):
             if ".csv" in fi or ".CSV" in fi:
-                pathlist.append(path)
+                if fi=='all.csv':
+                    pass
+                else:
+                    pathlist.append(path)
 
 
-# use this to ruturn a sorted filepaths of all csv files in rootdir(which as input filepafth)
+# use this to return a sorted filepaths of all csv files in rootdir(which as input filepafth)
 def show_all_path(filepath:str):
     filepath_list = []
     filepath = filepath.strip()
     traverse_dir(filepath,filepath_list)
+    filepath_list= makesure_seccsv(filepath_list)
     return sorted(filepath_list)
 
-
+# use this to return filenames from a filepath list
 def get_filename(filepath_list:list):
     namelist=[]
     for fi in filepath_list:
         fi = os.path.basename(fi)
         namelist.append(fi.split('.')[0])# fi.split('.')[0] for delete '.csv'
     return namelist
+
+# this function for function makeshure_seccsv
+def _pandas_read_sec_csv(file_path:'string file path'):
+    '''
+    only for read individual sec csv file
+    columns given [['time','peak']]
+    '''
+    if isinstance(file_path,str):
+        df = pandas.read_csv(file_path,encoding = "UTF-16-LE",sep='\t',names=['time','peak'])
+        if df.time.dtype==float and df.peak.dtype==float:
+            return df
+        else:
+            return None
+    else:
+        return None
+
+# this function to test if file a sec csv, not a cpm csv
+def makesure_seccsv(filepath_list:list):
+    '''
+    because cpm csv in file.
+    use this function as filter to get pure sec csv
+
+    '''
+    new_filepath_list=[]
+    for filepath in filepath_list:
+        fi = _pandas_read_sec_csv(filepath)
+        if fi == None:
+            pass
+        else:
+            new_filepath_list.append(filepath)
+    return sorted(new_filepath_list)
+
 
 if __name__ == "__main__":
     print("test case")
