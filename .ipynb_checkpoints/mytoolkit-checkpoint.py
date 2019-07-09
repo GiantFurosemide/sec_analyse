@@ -20,19 +20,20 @@ def pick_x_region(
     """
     if isinstance(df,pandas.core.frame.DataFrame):
         df = df.copy()
-        df = df.where((df.time<x_interval[1])&(df.time>x_interval[0]))
+        df = df[df.time<x_interval[1]]
+        df = df[df.time>x_interval[0]]
         return df
 
 
 #normalize to max
 def normalize_peak2max(df:'pandas data frame'):
-    if isinstance(df,pandas.core.frame.DataFrame) or isinstance(df,pandas.core.series.Series) :
+    if isinstance(df,pandas.core.frame.DataFrame):
         df.peak= df.copy().apply(lambda x: (x-x.min())/(x.max()-x.min())).peak*100
     return df
 
 #normalize to zero
 def normalize_peak2zero(df:'pandas data frame'):
-    if isinstance(df,pandas.core.frame.DataFrame) or isinstance(df,pandas.core.series.Series) :
+    if isinstance(df,pandas.core.frame.DataFrame):
         df.peak= df.copy().apply(lambda x: (x-x.min())).peak
     return df
 
