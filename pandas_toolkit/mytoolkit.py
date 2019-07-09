@@ -45,7 +45,10 @@ def pandas_read_sec_csv(file_path:'string file path'):
     '''
     if isinstance(file_path,str):
         df = pandas.read_csv(file_path,encoding = "UTF-16-LE",sep='\t',names=['time','peak'])
-        return df
+        if df.time.dtype==float and df.peak.dtype==float:
+            return df
+        else:
+            return None
     else:
         return None
 
