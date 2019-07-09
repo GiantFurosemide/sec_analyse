@@ -43,10 +43,13 @@ def _pandas_read_sec_csv(file_path:'string file path'):
     columns given [['time','peak']]
     '''
     if isinstance(file_path,str):
-        df = pandas.read_csv(file_path,encoding = "UTF-16-LE",sep='\t',names=['time','peak'])
-        if df.time.dtype==float and df.peak.dtype==float:
-            return df
-        else:
+        try:
+            df = pandas.read_csv(file_path,encoding = "UTF-16-LE",sep='\t',names=['time','peak'])
+            if df.time.dtype==float and df.peak.dtype==float:
+                return df
+            else:
+                return None
+        except UnicodeDecodeError:
             return None
     else:
         return None
