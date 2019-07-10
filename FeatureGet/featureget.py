@@ -9,6 +9,7 @@ from scipy.signal import find_peaks
 import scipy.signal
 
 def df2feature_vector(df:'pandas.dataframe',maxn:int=1):
+    
     '''
     input pandas.df\maxn(optional)
     output:([index_list],array[max_peak_list]:peak height,array[prominences],array[results_half[0]],array[results_full[0]])
@@ -30,7 +31,7 @@ def df2feature_vector(df:'pandas.dataframe',maxn:int=1):
     https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_widths.html#scipy.signal.peak_widths
     '''
     # find peaks,return peaks's index array
-    peaks_found,param = scipy.signal.find_peaks(df.peak)
+    peaks_found,_ = scipy.signal.find_peaks(df.peak)
     # pick peaks' <.peak> from df by peaks_found
     sele_peak=df.peak[peaks_found]
     # pick max value from pd.Series sele_peak,max顺序为数值降序
