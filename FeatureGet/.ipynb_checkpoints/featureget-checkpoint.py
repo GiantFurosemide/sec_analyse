@@ -3,50 +3,63 @@ import matplotlib
 import numpy as np
 import nltk
 import pandas as pd
-import TraverseDir_copy.TraverseDir as td
-import pandas_toolkit_copy.mytoolkit as tk
+import TraverseDir.TraverseDir as td
+import pandas_toolkit.mytoolkit as tk
 from scipy.signal import find_peaks
-import pickle
+import scipy.signal
 
-def make_data_list(rootdir:str,x_interval:tuple=(2.0,5.5))
-    # this is data make module
-    rootDir = rootdir
-    file_path_list = td.show_all_path(rootDir)
-    file_name_list = td.get_filename(file_path_list)
-    #overview alldata in rootDir
-    print('length is: '+f'{len(file_name_list)}')
-    print('type is: '+f"{type(file_name_list)}")
-    # make data list[('name',pandas.df),...]
-    data_list = []
-    for finame,fipath in zip(file_name_list,file_path_list):
-        data_pair= (finame,tk.onestep_norm_peak2zero(fipath,x_interval),tk.onestep_norm_peak2max(fipath,x_interval))
-        data_list.append(data_pair)
+def df2feature_vector(df:'pandas.dataframe',maxn:int=1):
     
-    ss = data_list
-    #SS :[(filename:str,peak2zero:pandas.df,peak2max:pandas.df)]
-    #overview alldata in ss
-
-    print('length is: '+f'{len(ss)}')
-    print('type is: '+f"{type(ss)}")
-
-# save
-with open(f'laballdata_datalist_ss_{x_interval[0]}_{x_interval[1]}','wb') as fi:
-    pickle.dump(ss,fi)
-# load
-with open('laballdata_datalist_ss','rb') as fi:
-    ss_load = pickle.load(fi)
+    '''
+    input pandas.df\maxn(optional)
+    output:([index_list],array[max_peak_list]:peak height,array[prominences],array[results_half[0]],array[results_full[0]])
     
+    need: 
+    import matplotlib.pyplot as plt
+    import matplotlib
+    import numpy as np
+    import nltk
+    import pandas as pd
+    import TraverseDir.TraverseDir as td
+    import pandas_toolkit.mytoolkit as tk
+    from scipy.signal import find_peaks
+    import scipy.signal
+    
+    maxn:number of max values you want.usually we just pick main peak between time[2.0,5.0]
+    
+    about width:
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_widths.html#scipy.signal.peak_widths
+    '''
+    # find peaks,return peaks's index array
+    peaks_found,_ = scipy.signal.find_peaks(df.peak)
+    # pick peaks' <.peak> from df by peaks_found
+    sele_peak=df.peak[peaks_found]
+    # pick max value from pd.Series sele_peak,max顺序为数值降序
+    max_array=sele_peak.values[np.argsort(sele_peak)[-maxn:][::-1]]
+    # make index list
+    index_list=[]
+    for i in max_array:
+        index_list.append(sele_peak.index[sele_peak==i][0])
+    # get prominences:array
+    prominences = scipy.signal.peak_prominences(df.peak,index_list)[0] # prominences has 3 arraies,use first 
+    # calculation about width.
+    # x axis is value .time. But results_half returns indexs of .time,with which we calculate width.
+    # width_coefficient*results_half[0] returns what we see in the plot.
+    index_x_max=x.time.index[x.time==x.time.max()][0]
+    index_x_min=x.time.index[x.time==x.time.min()][0]
+    index_length = index_x_max-index_x_min
+    width_coefficient=(x.time.max()-x.time.min())/index_length
+    
+    # get width:array
+    results_half = scipy.signal.peak_widths(df.peak, index_list, rel_height=0.5)[0]*width_coefficient
+    results_full = scipy.signal.peak_widths(df.peak, index_list, rel_height=1)[0]*width_coefficient
 
-if __name__ == '__main__':
-    rootDir_input = input('>>>Please input rootdir.\n')
-    x_interval_input = input('>>>Please input x_interval.\n')
-    make_data_list(rootDir_input,x_interval_input)
 
-    with open(f'laballdata_datalist_ss_{x_interval[0]}_{x_interval[1]}','wb') as fi:
-    pickle.dump(ss,fi)
-
-    print(f'laballdata_datalist_ss_{x_interval[0]}_{x_interval[1]}'+' has already been saved to current file')
-
-
+    # get retention time list
+    retention_time_list = []
+    for i in index_list:
+        retention_time_list.append(df.time[i])
+    
+    return (index_list,max_array,retention_time_list,prominences,results_half,results_full)
     
     
