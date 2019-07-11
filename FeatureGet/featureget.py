@@ -42,9 +42,19 @@ def df2feature_vector(df:'pandas.dataframe',maxn:int=1):
         index_list.append(sele_peak.index[sele_peak==i][0])
     # get prominences:array
     prominences = scipy.signal.peak_prominences(df.peak,index_list)[0] # prominences has 3 arraies,use first 
+    # calculation about width.
+    # x axis is value .time. But results_half returns indexs of .time,with which we calculate width.
+    # width_coefficient*results_half[0] returns what we see in the plot.
+    index_x_max=x.time.index[x.time==x.time.max()][0]
+    index_x_min=x.time.index[x.time==x.time.min()][0]
+    index_length = index_x_max-index_x_min
+    width_coefficient=(x.time.max()-x.time.min())/index_length
+    
     # get width:array
-    results_half = scipy.signal.peak_widths(df.peak, index_list, rel_height=0.5)[0]
-    results_full = scipy.signal.peak_widths(df.peak, index_list, rel_height=1)[0]
+    results_half = scipy.signal.peak_widths(df.peak, index_list, rel_height=0.5)[0]*width_coefficient
+    results_full = scipy.signal.peak_widths(df.peak, index_list, rel_height=1)[0]*width_coefficient
+
+
     # get retention time list
     retention_time_list = []
     for i in index_list:
