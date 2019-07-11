@@ -26,7 +26,6 @@ def make_data_list(rootdir:str,x_interval:tuple=(2.0,5.5)):
     return ss
     #SS :[(filename:str,peak2zero:pandas.df,peak2max:pandas.df)]
     #overview alldata in ss
-
     print('length is: '+f'{len(ss)}')
     print('type is: '+f"{type(ss)}")
 
