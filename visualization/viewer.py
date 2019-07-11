@@ -10,7 +10,7 @@ import scipy.signal
 import pickle
 
 
-def 2d_viewer(df:'protein pandas.dataframe',show=False):
+def viewer2d(df:'protein pandas.dataframe',show=False):
     
     '''
     input: 
@@ -35,7 +35,7 @@ def 2d_viewer(df:'protein pandas.dataframe',show=False):
     try:    
         #show peak position as 'x'
         x = df
-        peaks,param = find_peaks(x.peak)
+        peaks,_ = find_peaks(x.peak)
         # get prominences
         prominences = scipy.signal.peak_prominences(x.peak,peaks)[0] # prominences has 3 arraies,use first 
         # get half width,full width
@@ -50,7 +50,7 @@ def 2d_viewer(df:'protein pandas.dataframe',show=False):
         width_coefficient=(x.time.max()-x.time.min())/index_length
 
         contour_heights = x.peak[peaks]-prominences
-        plt.plot(x.time,tdata[1].peak)
+        plt.plot(x.time,x.peak)
         plt.plot(x.time[peaks],x.peak[peaks],"x")
         plt.vlines(x=x.time[peaks], ymin=contour_heights, ymax=x.peak[peaks])
         plt.hlines(y=results_half[1],
