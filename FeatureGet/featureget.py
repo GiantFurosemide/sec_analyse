@@ -63,3 +63,24 @@ def df2feature_vector(df:'pandas.dataframe',maxn:int=1):
     return (index_list,max_array,retention_time_list,prominences,results_half,results_full)
     
     
+def make_name_feature_list(ss:'df'):
+    '''
+     make feature list :
+     input: ss:[(name:str,df:pandas.datafram),...]
+     output:[(name,[max_peak,retention_time,half_width)]
+    '''
+    name_feature_list = []
+    for sample in ss:
+        name = sample[0]
+        df_zero = sample[1]
+        
+        try:
+            features = df2feature_vector(df_zero,1)
+            max_peak= features[3][0] #use prominences
+            retention_time = features[2][0]
+            half_width = features[4][0]
+            
+            name_feature_list.append((name,[max_peak,retention_time,half_width]))
+        except IndexError:
+            pass
+    return name_feature_list
